@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void	print_map(int **map, int y, int x)
+void	print_map(int *map, int y, int x)
 {
 	int i = 0;
 	int j = 0;
@@ -10,7 +10,7 @@ void	print_map(int **map, int y, int x)
 		j = 0;
 		while (j < x)
 		{
-			printf("%d", map[i][j]);
+			printf("%d", map[i * x + j]);
 			j++;
 		}
 		printf("\n");
@@ -20,7 +20,7 @@ void	print_map(int **map, int y, int x)
 
 int main()
 {
-	int map[7][10] = {
+	int grid[7][10] = {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -29,6 +29,7 @@ int main()
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 			};
-	print_map(map[0][0], 7, 10);
+	int *map = (int *)grid;
+	print_map(map, 7, 10);
 	return (0);
 }
