@@ -23,7 +23,7 @@ void	check_fill(char *map_p, int y, int x, int p_y, int p_x, int *false_checker)
 {
 	if (map_p[p_y * x + p_x] == '3' || map_p[p_y * x + p_x] == '1' || *false_checker == 1)
 		return ;
-	print_map(map_p, 25, 25);
+	print_map(map_p, y, x);
 	if (map_p[p_y * x + p_x] == 'X')
 	{
 		*false_checker = 1;
@@ -37,20 +37,20 @@ void	check_fill(char *map_p, int y, int x, int p_y, int p_x, int *false_checker)
 	check_fill(map_p, y, x, p_y, p_x - 1, false_checker);
 }
 
-void	put_grid_to_container(char *map_p, char *cont_p)
+void	put_grid_to_container(char *map_p, char *cont_p, int y, int x)
 {
 	int i = 0, j = 0;
-	while (i < 25)
+	while (i < y)
 	{
 		j = 0;
-		while (j < 25)
+		while (j < x)
 		{
-			if (i == 0 || i == 24 || j == 0 || j == 24)
-				cont_p[i * 25 + j] = 'X'; // X = edge
+			if (i == 0 || i == y - 1 || j == 0 || j == x - 1)
+				cont_p[i * x + j] = 'X'; // X = edge
 			else if (i > 9 || j > 18)
-				cont_p[i * 25 + j] = 's'; // s = space out of wall (should be)
+				cont_p[i * x + j] = 's'; // s = space out of wall (should be)
 			else
-				cont_p[i * 25 + j] = map_p[(i - 1) * 18 + (j - 1)]; // copy map to container
+				cont_p[i * x + j] = map_p[(i - 1) * 18 + (j - 1)]; // copy map to container
 			j++;
 		}
 		i++;
@@ -60,24 +60,25 @@ void	put_grid_to_container(char *map_p, char *cont_p)
 int main()
 {
 	char map[9][18] = {
-		{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'},
+		{'0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0'},
 		{'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1'},
-		{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0', '1'},
-		{'1', '0', '0', '0', '0', '0', '0', '0', '2', '0', '0', '0', '0', '0', '0', '1', '0', '0'},
+		{'1', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0', '1'},
+		{'1', '0', '1', '0', '0', '0', '0', '0', '2', '0', '0', '0', '0', '0', '0', '0', '0', '1'},
 		{'1', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0', '1', '0', '1'},
 		{'1', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '1'},
 		{'1', '0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0', '1'},
 		{'1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1'},
-		{'1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'}
+		{'0', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0'}
 			};
-	char container[25][25];
 	char *map_p = (char *)map;
-	char *cont_p = (char *)container;
+	int y = sizeof(map) / sizeof(map[0]) + 2;
+	int x = sizeof(map[0]) / sizeof(map[0][0]) + 2;
+	char *cont_p = malloc(sizeof(char) * y * x);
 	int false_checker = -1;
-	put_grid_to_container(map_p, cont_p);
-	print_map(cont_p, 25, 25);
-	check_fill(cont_p, 25, 25, 4, 9, &false_checker);
-	print_map(cont_p, 25, 25);
+	put_grid_to_container(map_p, cont_p, y, x);
+	print_map(cont_p, y, x);
+	check_fill(cont_p, y, x, 4, 9, &false_checker);
+	print_map(cont_p, y, x);
 	if (false_checker == 1)
 		printf("\nError: Map is not sorrounded by wall.\n");
 	return (0);
